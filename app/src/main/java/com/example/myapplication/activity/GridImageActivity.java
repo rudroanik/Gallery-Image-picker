@@ -22,9 +22,10 @@ import java.util.Collections;
 
 public class GridImageActivity extends AppCompatActivity {
 
-    private ArrayList<String> images;
-    private ArrayList<String> imageList;
+    private ArrayList<String> imagesFromGallery;
+    private ArrayList<String> selectedImageList;
     private Button sendImageBtn;
+    private GridView gallery;
     GridImageAdapter gridImageAdapter;
 
     @Override
@@ -32,52 +33,58 @@ public class GridImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grid_image);
 
-        GridView gallery = findViewById(R.id.galleryGridView);
+        gallery = findViewById(R.id.galleryGridView);
         sendImageBtn = findViewById(R.id.sendBtnID);
-        imageList = new ArrayList<>();
-        images = getAllShownImagesPath(this);
+        selectedImageList = new ArrayList<>();
+        imagesFromGallery = getAllShownImagesPath(this);
 
-        gridImageAdapter = new GridImageAdapter(this, images, imageList);
+        gridImageAdapter = new GridImageAdapter(this, imagesFromGallery, selectedImageList);
         gallery.setAdapter(gridImageAdapter);
 
+        onClick();
+
+    }
+
+    private void onClick() {
         gallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
 
-                if (null != images && !images.isEmpty()) {
+                if (null != imagesFromGallery && !imagesFromGallery.isEmpty()) {
 
+                    // Logic to show button and show total selected image
 
-                    if (imageList.size() < 6) {
-                        for (String image : imageList) {
-                            if (image.equalsIgnoreCase(images.get(position))) {
-                                imageList.remove(image);
+                    if (selectedImageList.size() < 6) {
+                        for (String image : selectedImageList) {
+                            if (image.equalsIgnoreCase(imagesFromGallery.get(position))) {
+                                selectedImageList.remove(image);
                                 view.findViewById(R.id.textViewID).setVisibility(View.GONE);
                                 view.findViewById(R.id.imageCheckIVId).setVisibility(View.GONE);
-                                if (imageList.size() == 0) {
+                                if (selectedImageList.size() == 0) {
                                     sendImageBtn.setVisibility(View.GONE);
                                 } else {
-                                    sendImageBtn.setText("Send (" + imageList.size() + ")");
+                                    sendImageBtn.setText("Send (" + selectedImageList.size() + ")");
                                 }
 
                                 return;
                             }
 
                         }
-                        imageList.add(images.get(position));
+                        selectedImageList.add(imagesFromGallery.get(position));
                         view.findViewById(R.id.textViewID).setVisibility(View.VISIBLE);
                         view.findViewById(R.id.imageCheckIVId).setVisibility(View.VISIBLE);
                         sendImageBtn.setVisibility(View.VISIBLE);
-                        sendImageBtn.setText("Send (" + imageList.size() + ")");
+                        sendImageBtn.setText("Send (" + selectedImageList.size() + ")");
 
 
                     } else {
-                        for (String s : imageList) {
-                            if (s.equalsIgnoreCase(images.get(position))) {
-                                imageList.remove(s);
+                        for (String image : selectedImageList) {
+                            if (image.equalsIgnoreCase(imagesFromGallery.get(position))) {
+                                selectedImageList.remove(image);
                                 view.findViewById(R.id.textViewID).setVisibility(View.GONE);
                                 view.findViewById(R.id.imageCheckIVId).setVisibility(View.GONE);
-                                sendImageBtn.setText("Send (" + imageList.size() + ")");
+                                sendImageBtn.setText("Send (" + selectedImageList.size() + ")");
                                 return;
                             }
 
@@ -87,8 +94,6 @@ public class GridImageActivity extends AppCompatActivity {
                     }
 
                 }
-
-
             }
         });
 
@@ -97,19 +102,19 @@ public class GridImageActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent intent = new Intent();
-                intent.putStringArrayListExtra("image", imageList);
+                intent.putStringArrayListExtra("image", selectedImageList);
                 setResult(4, intent);
                 finish();
             }
         });
-
     }
 
+    // Load all image from gallery
 
     private ArrayList<String> getAllShownImagesPath(Activity activity) {
         Uri uri;
         Cursor cursor;
-        int column_index_data, column_index_folder_name;
+        int column_index_data;
         ArrayList<String> listOfAllImages = new ArrayList<String>();
         String absolutePathOfImage = null;
         uri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
@@ -121,8 +126,7 @@ public class GridImageActivity extends AppCompatActivity {
                 null, null);
 
         column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-        column_index_folder_name = cursor
-                .getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
+
         while (cursor.moveToNext()) {
             absolutePathOfImage = cursor.getString(column_index_data);
 

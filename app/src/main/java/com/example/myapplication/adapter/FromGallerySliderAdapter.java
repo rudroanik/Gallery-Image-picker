@@ -2,20 +2,15 @@ package com.example.myapplication.adapter;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
+import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
-
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.myapplication.R;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class FromGallerySliderAdapter extends PagerAdapter {
@@ -35,13 +30,14 @@ public class FromGallerySliderAdapter extends PagerAdapter {
     }
 
     @Override
-    public boolean isViewFromObject(View view, Object object) {
+    public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
 
         return view == object;
     }
 
+    @NonNull
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Object instantiateItem(@NonNull ViewGroup container, int position) {
 
         ImageView imageView;
 

@@ -54,13 +54,17 @@ public class SelectFromGalleryLikeFacebookActivity extends AppCompatActivity {
         if (resultCode == 4) {
 
             imageList.clear();
-            imageList = data.getStringArrayListExtra("image");
 
-            viewPager.setAdapter(new FromGalleryLikeFacebookSliderAdapter(this, imageList));
-            viewPager.setVisibility(View.VISIBLE);
-            circleIndicator.setVisibility(View.VISIBLE);
-            circleIndicator.setViewPager(viewPager);
-            getDelayToSwipeViewpager();
+            if (data != null){
+                imageList = data.getStringArrayListExtra("image");
+
+                viewPager.setAdapter(new FromGalleryLikeFacebookSliderAdapter(this, imageList));
+                viewPager.setVisibility(View.VISIBLE);
+                circleIndicator.setVisibility(View.VISIBLE);
+                circleIndicator.setViewPager(viewPager);
+                getDelayToSwipeViewpager();
+            }
+
         }
     }
 

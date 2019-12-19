@@ -52,8 +52,6 @@ public class GridImageAdapter extends BaseAdapter {
             if (s.equalsIgnoreCase(images.get(position))) {
                 view.findViewById(R.id.textViewID).setVisibility(View.VISIBLE);
                 view.findViewById(R.id.imageCheckIVId).setVisibility(View.VISIBLE);
-            } else {
-
             }
         }
 
